@@ -1,0 +1,62 @@
+services:
+  cache:
+    image: redis:7.2.3-alpine
+    container_name: cache-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      app-tier:
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    image: gabcares/yassir-eta-fastapi:latest
+    container_name: yassir-eta-fastapi
+    command: uvicorn main:app --host 0.0.0.0 --port 7860
+    volumes:
+      - api:/api
+    ports:
+      - "7860:7860"
+    env_file:
+      - path: ./env/offline.env
+        required: true
+      - path: ./env/online.env
+        required: false
+    depends_on:
+      - cache
+    networks:
+      app-tier:
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    image: gabcares/yassir-eta-shiny:latest
+    container_name: yassir-eta-shiny
+    command: shiny run app.py
+    volumes:
+      - client:/client
+    ports:
+      - "3939:3939"
+    env_file:
+      - path: ./env/offline.env
+        required: true
+      - path: ./env/online.env
+        required: false
+    depends_on:
+      - api
+    networks:
+      app-tier:
+
+networks:
+  app-tier:
+    driver: bridge
+
+volumes:
+  api:
+  client:
+  redis_data: {}
