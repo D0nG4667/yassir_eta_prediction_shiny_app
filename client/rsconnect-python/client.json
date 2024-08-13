@@ -1,0 +1,12 @@
+{
+    "https://api.shinyapps.io": {
+        "server_url": "https://api.shinyapps.io",
+        "filename": "C:\\Users\\hp\\Desktop\\gab\\Data Analyst\\Azubi Africa\\Career Accelerator\\Capstone Project\\personal\\yassir_eta_prediction_shiny_app\\client",
+        "app_url": "https://gabcares.shinyapps.io/yassir-eta-data-app/",
+        "app_id": 12437864,
+        "app_guid": null,
+        "title": "yassir-eta-data-app",
+        "app_mode": "python-shiny",
+        "app_store_version": 1
+    }
+}

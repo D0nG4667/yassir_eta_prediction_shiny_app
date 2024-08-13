@@ -1,0 +1,35 @@
+/* Define the primary color */
+:root {
+    --primary-color: #FB2576 !important;
+    --secondary-color: #6316DB !important;
+}
+
+/* Use the primary color for buttons */
+.btn-primary {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+/* Use the primary color for slider thumbs */
+.irs-bar,
+.irs-to,
+.irs-from,
+.irs-slider,
+.irs-bar-edge,
+.irs-handle {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+
+/* Dashboard pill cards links */
+.nav.nav-pills.card-header-pills.shiny-tab-input.shiny-bound-input .nav-link {
+    color: var(--secondary-color) !important; 
+}
+
+
+/* Dashboard pill cards link active */
+.nav.nav-pills.card-header-pills.shiny-tab-input.shiny-bound-input .nav-link.active {
+    background-color: var(--primary-color) !important; 
+    color: white !important; 
+}
