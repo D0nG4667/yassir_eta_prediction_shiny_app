@@ -37,7 +37,7 @@ services:
       dockerfile: Dockerfile
     image: gabcares/yassir-eta-shiny:latest
     container_name: yassir-eta-shiny
-    command: shiny run app.py
+    command: shiny run app.py --host 0.0.0.0 --port 3939
     volumes:
       - client:/client
     ports:

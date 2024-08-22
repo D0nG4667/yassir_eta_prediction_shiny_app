@@ -65,7 +65,7 @@ Daily weather summaries, based on data from the ERA5 dataset.\n
 
 
 ### Explore the frontend data application
-To explore the fontend application (built-with streamlit) click the link below.\n
+To explore the fontend application (built-with shiny for python) click the link below.\n
 🚗[Yassir frontend](/https://hugginface-yassir)
 
 

@@ -83,7 +83,8 @@ async def predict_eta(data: EtaFeatures, model_name: str) -> Optional[float]:
             async with httpx.AsyncClient() as client:
                 response = await client.post(model_endpoint, json=data, timeout=30)
                 response.raise_for_status()  # Ensure we catch any HTTP errors
-
+            
+            # print(response.json())            
             if (response.status_code == 200):
                 result = response.json()['result']
 
@@ -264,7 +265,7 @@ def predict_page(input: Inputs, output: Outputs, session: Session):
                     try:
                         # print(valid())
                         # print(notification_error())
-                        if validate_inputs(origin_lat(), origin_lon(), destination_lat(), destination_lon()) and valid():
+                        if validate_inputs(origin_lat(), origin_lon(), destination_lat(), destination_lon()) and valid():                        
                             data: EtaFeatures = {
                                 'timestamp': [datetz()],
                                 'origin_lat': [origin_lat()],
@@ -301,6 +302,15 @@ def predict_page(input: Inputs, output: Outputs, session: Session):
                     text = await eta()
                     return text[1] if text else ""
 
+                @render.express
+                def eta_info():
+                    with ui.tooltip(title="Google Maps ETA"):
+                        icon_svg("google")
+                        f"{trip_eta():,.0f} s | {time.strftime('%H:%M:%S', time.gmtime(trip_eta()))}"
+                        
+                    
+                    
+                    
         # Map (2 indents)
         with ui.card():
             ui.card_header(
@@ -321,6 +331,7 @@ def predict_page(input: Inputs, output: Outputs, session: Session):
 
     # Reactive value to store trip_distance information
     trip_distance = reactive.value()
+    trip_eta = reactive.value()
 
     @reactive.effect(priority=100)
     def _():
@@ -352,10 +363,11 @@ def predict_page(input: Inputs, output: Outputs, session: Session):
         destination_lon.set(input.destination_lon(
         ) if valid else LOCATIONS["National Museum of Kenya"]['longitude'])
 
-        # Automate trip distance
-        google_td = google_maps_trip_distance(loc1xy(), loc2xy())
+        # Automate trip distance, eta from Google Maps
+        google_td, google_eta = google_maps_trip_distance_eta(loc1xy(), loc2xy())
         if isinstance(google_td, float):
             trip_distance.set(google_td)
+            trip_eta.set(google_eta)
         else:
             ui.notification_show(
                             "🚨 Could not estimate trip distance. Using Geosidic distance...", duration=3, type="warning")
@@ -368,7 +380,7 @@ def predict_page(input: Inputs, output: Outputs, session: Session):
     @reactive.effect
     @reactive.event(trip_distance)
     def _():
-        # if valid():
+        if valid():
             # Update the trip distance input with current calculated or manual trip distance
             ui.update_numeric("trip_distance", value=trip_distance())
 
@@ -407,7 +419,7 @@ def predict_page(input: Inputs, output: Outputs, session: Session):
 
     @reactive.effect
     def _():
-        if valid():
+        # if valid():
             l1 = loc1xy()
             l2 = loc2xy()
 

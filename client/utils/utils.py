@@ -10,7 +10,7 @@ from ipyleaflet import AwesomeIcon
 
 from shiny.express import ui
 
-from utils.config import MAPS_API_KEY, BRANDCOLORS, BASEMAPS, ONE_WEEK_SEC, LOCATIONS, TRIP_DISTANCE
+from utils.config import MAPS_API_KEY, BRANDCOLORS, BASEMAPS, ONE_WEEK_SEC, LOCATIONS, TRIP_DISTANCE, ETA
 
 
 # Cache expires after 1 week
@@ -21,7 +21,7 @@ from utils.config import MAPS_API_KEY, BRANDCOLORS, BASEMAPS, ONE_WEEK_SEC, LOCA
 # Helper functions for map and location inputs on predict page
 # ---------------------------------------------------------------
 
-@cached(cache=TTLCache(maxsize=300, ttl=ONE_WEEK_SEC))  # Memory
+# @cached(cache=TTLCache(maxsize=300, ttl=ONE_WEEK_SEC))  # Memory
 def get_bounds(country: str) -> Tuple[float]:
     headers = {
         'User-Agent': 'Yassir ETA Shiny App/1.0 (gabriel007okuns@gmail.com)'
@@ -38,8 +38,8 @@ def get_bounds(country: str) -> Tuple[float]:
     return lat_min, lat_max, lon_min, lon_max
 
 
-@cached(cache=TTLCache(maxsize=3000, ttl=ONE_WEEK_SEC))  # Memory
-def google_maps_trip_distance(origin: tuple, destination: tuple) -> float:
+# @cached(cache=TTLCache(maxsize=3000, ttl=ONE_WEEK_SEC))  # Memory
+def google_maps_trip_distance_eta(origin: Tuple[float], destination: Tuple[float]) -> Tuple[float]:
     """
     The road distance calculated using Google Maps distance matrix api with the driving car is the shortest 
     or optimal road distance based on the available road data and routing algorithm.
@@ -56,6 +56,7 @@ def google_maps_trip_distance(origin: tuple, destination: tuple) -> float:
 
     # Send request
     response = requests.get(url)
+    
 
     if response.status_code == 200:
         # Decode the response
@@ -64,16 +65,19 @@ def google_maps_trip_distance(origin: tuple, destination: tuple) -> float:
         # Extract distance information
         if "rows" in data and len(data["rows"]) > 0:
             distance_info = data["rows"][0]["elements"][0]["distance"]
+            eta_info = data["rows"][0]["elements"][0]["duration"]
             distance = float(distance_info['value'])
+            eta = float(eta_info['value'])
         else:
             distance = TRIP_DISTANCE # Default
             back_to_nairobi()
     else:
         distance = TRIP_DISTANCE # Default
-        # print(response.status_code)
+        eta = ETA # Default
+    
         back_to_nairobi()
 
-    return distance
+    return distance, eta
 
 
 def update_marker(map: L.Map, loc: tuple, on_move: object, name: str, icon: AwesomeIcon):

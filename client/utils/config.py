@@ -100,3 +100,4 @@ ONE_WEEK_SEC = ONE_DAY_SEC * 7
 
 # Default trip distance
 TRIP_DISTANCE = 30275.7
+ETA = 18000

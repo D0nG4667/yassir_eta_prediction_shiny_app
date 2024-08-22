@@ -73,7 +73,7 @@ def home_page(input: Inputs, output: Outputs, session: Session):
                     For companies like Yassir, the ability to 
                 """,
                 ui.strong("predict the estimated time of arrival (ETA)"),
-                "for trips in ",
+                " for trips in ",
                 ui.strong("real-time"),
                 " is crucial. Our mission is to enhance the Yassir experience by leveraging ",
                 ui.strong("data"),
